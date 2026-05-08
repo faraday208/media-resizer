@@ -1,14 +1,25 @@
 [project]
-name = "image-resizer"
-version = "0.1.0"
-description = "Batch image resizing with Lanczos algorithm, aspect-ratio preserving"
+name = "media-resizer"
+version = "1.0.0"
+description = "Media batch resize (Lanczos, aspect-preserving) — copy/in-place + undo (copy mode)"
 requires-python = ">=3.11"
 readme = "README.md"
+license = { file = "LICENSE" }
 authors = [{ name = "faraday208" }]
-keywords = ["image", "resize", "lanczos", "batch", "dataset"]
+keywords = ["media", "image", "resize", "lanczos", "batch", "dataset", "ai"]
 dependencies = [
     "pillow>=10.0.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-q --tb=short"
 
 [tool.uv]
 package = false
