@@ -16,6 +16,7 @@ def write_report(
     *,
     scan_result: ScanResult,
     recursive: bool,
+    dry_run: bool = False,
 ) -> Path:
     summary = {
         "total_scanned": scan_result.total_scanned,
@@ -31,6 +32,7 @@ def write_report(
         "mode": scan_result.mode,                    # "copy" | "in-place"
         "output_dir": scan_result.output_dir,
         "max_size": list(scan_result.max_size),
+        "dry_run": dry_run,
         "summary": summary,
         # actions[]: convention §4 — her resize bir action
         "actions": [

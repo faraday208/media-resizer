@@ -109,6 +109,25 @@ def test_resize_dataset_in_place_mode(mixed_dataset: Path):
         assert max(im.size) <= 1024
 
 
+def test_resize_dataset_dry_run_no_filesystem_change(
+    mixed_dataset: Path, tmp_path_factory
+):
+    """dry_run=True: planı sayar ama dosyalara dokunmaz."""
+    out = tmp_path_factory.mktemp("dryout")
+    sr = resize_dataset(
+        mixed_dataset, max_size=(1024, 1024),
+        mode="copy", output_dir=out, recursive=True,
+        dry_run=True,
+    )
+    # Sayım gerçekçi
+    assert sr.total_scanned == 5
+    assert sr.resized_count == 3
+    assert sr.skipped_count == 2
+    # Ama hiçbir output dosyası yok
+    assert not list(out.glob("*.jpg"))
+    assert not (out / "sub").exists()
+
+
 def test_resize_dataset_copy_requires_output(mixed_dataset: Path):
     with pytest.raises(ValueError, match="output_dir"):
         resize_dataset(mixed_dataset, mode="copy", output_dir=None)

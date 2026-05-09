@@ -51,7 +51,7 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument("--quality", type=int, default=95, help="JPEG quality (default: 95)")
     p.add_argument("--limit", type=int, default=0, help="Max dosya")
     p.add_argument("--dry-run", action="store_true",
-                   help="(şu an etkisiz — resize her zaman fiziksel)")
+                   help="Plan göster, dosyalara dokunma")
     p.add_argument("--yes", action="store_true",
                    help="In-place modda onay sorma")
     p.add_argument("--undo", help="Resize raporundan geri al (sadece copy mode)")
@@ -115,7 +115,7 @@ def main() -> int:
     print(f"Media Resizer")
     print(f"{'='*70}")
     print(f"Input:    {input_dir}")
-    print(f"Mode:     {args.mode}")
+    print(f"Mode:     {args.mode}{' (DRY-RUN)' if args.dry_run else ''}")
     if args.mode == "copy":
         print(f"Output:   {args.output}")
     print(f"Max size: {args.max_width}×{args.max_height}")
@@ -128,6 +128,7 @@ def main() -> int:
         output_dir=args.output,
         quality=args.quality,
         recursive=args.recursive,
+        dry_run=args.dry_run,
         progress_cb=_print_progress,
     )
     if args.limit > 0:
@@ -143,7 +144,8 @@ def main() -> int:
     # Rapor
     default_dir = Path(args.output) if args.output else input_dir
     report_path = _resolve_report_path(args, default_dir)
-    write_report(report_path, scan_result=sr, recursive=args.recursive)
+    write_report(report_path, scan_result=sr, recursive=args.recursive,
+                 dry_run=args.dry_run)
     print(f"\nRapor: {report_path}")
     return 0
 

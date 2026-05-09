@@ -90,9 +90,11 @@ def resize_one(
     max_size: tuple[int, int],
     *,
     quality: int = 95,
+    dry_run: bool = False,
 ) -> ResizeResult:
     """Tek dosyayı Lanczos ile aspect-preserving resize.
-    Eğer dosya zaten max_size altında ise skip (kopyala/dokunma)."""
+    Eğer dosya zaten max_size altında ise skip (kopyala/dokunma).
+    dry_run=True: planı ResizeResult olarak döndür, dosya yazma."""
     try:
         with Image.open(src) as img:
             w, h = img.size
@@ -108,13 +110,14 @@ def resize_one(
                     skipped=True,
                 )
             new_w, new_h = int(w * ratio), int(h * ratio)
-            resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            # JPEG için quality, PNG için optimize
-            save_kwargs: dict = {"optimize": True}
-            if dst.suffix.lower() in {".jpg", ".jpeg"}:
-                save_kwargs["quality"] = quality
-            resized.save(dst, **save_kwargs)
+            if not dry_run:
+                resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                # JPEG için quality, PNG için optimize
+                save_kwargs: dict = {"optimize": True}
+                if dst.suffix.lower() in {".jpg", ".jpeg"}:
+                    save_kwargs["quality"] = quality
+                resized.save(dst, **save_kwargs)
             return ResizeResult(
                 valid=True, reason=None,
                 filename=src.name, path=str(src.resolve()),
@@ -139,6 +142,7 @@ def resize_dataset(
     quality: int = 95,
     recursive: bool = True,
     allowed_exts: Iterable[str] = DEFAULT_IMAGE_EXTS,
+    dry_run: bool = False,
     progress_cb: ProgressCallback | None = None,
 ) -> ScanResult:
     """Bir dizini Lanczos ile aspect-preserving resize et.
@@ -176,7 +180,7 @@ def resize_dataset(
             rel = src.relative_to(root)
             dst = out_root / rel if out_root else src
 
-        r = resize_one(src, dst, max_size, quality=quality)
+        r = resize_one(src, dst, max_size, quality=quality, dry_run=dry_run)
         results.append(r.to_dict())
         if not r.valid:
             errors += 1

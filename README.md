@@ -160,7 +160,7 @@ uv sync --group dev
 uv run pytest
 ```
 
-19 test: collect_images + resize_one + resize_dataset + undo + write_report.
+20 test: collect_images + resize_one + resize_dataset (copy/in-place/dry-run) + undo + write_report.
 
 ---
 
@@ -174,6 +174,8 @@ uv run pytest
 ---
 
 ## 🏷️ Sürüm
+
+**v1.0.1** — `--dry-run` flag bağı düzeltildi. Önceki davranışta CLI flag tanımlıydı ama `resize_dataset()` çağrısına geçmiyordu (dead flag). `resize_one()` + `resize_dataset()` signature'larına `dry_run` parametresi eklendi, library aslında destekliyordu ama wrapper bağlamamıştı. Rapora `dry_run` alanı eklendi (rapor self-describing). +1 unit test (20 toplam).
 
 **v1.0.0** — clean release. `image-resizer` → `media-resizer`. Tek-dosya 51 satırlık script (tek görsel) → `resize_core/` paketi (toplu + recursive). argparse + standart flag'ler, sidecar JSON §4, undo, 19 test.
 

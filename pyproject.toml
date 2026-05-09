@@ -1,6 +1,6 @@
 [project]
 name = "media-resizer"
-version = "1.0.0"
+version = "1.0.1"
 description = "Media batch resize (Lanczos, aspect-preserving) — copy/in-place + undo (copy mode)"
 requires-python = ">=3.11"
 readme = "README.md"
