@@ -12,6 +12,30 @@
 
 ---
 
+## English
+
+**What it does.** Batch-resizes images with Lanczos resampling while preserving aspect ratio. Copy mode keeps the originals and supports undo; in-place mode overwrites them.
+
+**Install**
+
+```bash
+git clone https://github.com/faraday208/media-resizer
+cd media-resizer
+uv sync
+```
+
+**Basic usage**
+
+```bash
+uv run python run.py -i ./dataset \
+    --max-width 1024 --max-height 1024 \
+    -o ./resized
+```
+
+Step **05** of the [`media-dataset-prep`](https://github.com/faraday208/media-dataset-prep) pipeline; also works standalone. The detailed documentation below is in Turkish.
+
+---
+
 ## 🎯 Ne yapıyor?
 
 Bir klasördeki tüm görselleri **Lanczos** ile aspect-ratio koruyarak yeniden boyutlandırır:
